@@ -14,7 +14,7 @@ public Plugin myinfo =
 	name = "Warden Marker", 
 	author = "ByDexter", 
 	description = "", 
-	version = "1.0", 
+	version = "1.0c", 
 	url = "https://steamcommunity.com/id/ByDexterTR - ByDexter#2947"
 };
 
