@@ -1,21 +1,21 @@
 #include <sourcemod>
 #include <sdktools>
 #include <warden>
-#include <multicolors>
 
 #pragma semicolon 1
 #pragma newdecls required
 
 int g_Beam = -1, g_Halo = -1, g_MarkerColor[] =  { 0, 175, 255, 255 }, g_MarkerColorStat = 0, g_MarkerSpeed = 10, g_MarkerType = 0;
-float g_MarkerPos[3], g_MarkerSize = 150.0, g_MarkerWidht = 3.0, g_MarkerAmplitude = 0.0;
+float g_MarkerPos[3], g_MarkerSize = 150.0, g_MarkerWidht = 3.0, g_MarkerAmplitude = 0.0, g_MarkerMesafe = 16.0;
+bool CiftParca = false;
 
 public Plugin myinfo = 
 {
 	name = "Komutçu Marker", 
 	author = "ByDexter", 
 	description = "", 
-	version = "1.0c", 
-	url = "https://steamcommunity.com/id/ByDexterTR - ByDexter#2947"
+	version = "1.2", 
+	url = "https://steamcommunity.com/id/ByDexterTR - ByDexter#5494"
 };
 
 public void OnPluginStart()
@@ -30,9 +30,10 @@ public void OnPluginStart()
 public void OnMapStart()
 {
 	g_Beam = PrecacheModel("materials/sprites/laser_dexter.vmt");
-	g_Halo = PrecacheModel("materials/sprites/halo.vmt");
+	g_Halo = PrecacheModel("materials/sprites/light_glow02.vmt");
 	g_MarkerType = 0;
 	PrecacheModel("materials/sprites/white.vmt");
+	PrecacheModel("materials/sprites/laserbeam.vmt");
 	AddFileToDownloadsTable("materials/sprites/laser_dexter.vmt");
 }
 
@@ -41,7 +42,7 @@ public Action CommandListener_Marker(int client, const char[] command, int argc)
 	if (warden_iswarden(client) && IsPlayerAlive(client))
 	{
 		GetClientAimTargetPos(client, g_MarkerPos);
-		g_MarkerPos[2] += 10.0;
+		g_MarkerPos[2] += 16.0;
 	}
 }
 
@@ -50,7 +51,8 @@ public Action Command_Marker(int client, int args)
 	if (warden_iswarden(client))
 	{
 		Menu menu = new Menu(Menu_CallBack);
-		menu.SetTitle("[ByDexter] Marker - Özellikleri ?\n ");
+		menu.SetTitle("[^-^] Marker - Özellikleri ?");
+		
 		if (g_MarkerSize == 100.0)
 			menu.AddItem("Buyult", "Boyut: Small");
 		else if (g_MarkerSize == 150.0)
@@ -61,6 +63,7 @@ public Action Command_Marker(int client, int args)
 			menu.AddItem("Buyult", "Boyut: XLarge");
 		else if (g_MarkerSize == 300.0)
 			menu.AddItem("Buyult", "Boyut: XXLarge");
+		
 		if (g_MarkerColorStat == 0)
 			menu.AddItem("RazerYap", "Renk: Mavi");
 		else if (g_MarkerColorStat == 1)
@@ -75,6 +78,7 @@ public Action Command_Marker(int client, int args)
 			menu.AddItem("RazerYap", "Renk: Pembe");
 		else if (g_MarkerColorStat == 6)
 			menu.AddItem("RazerYap", "Renk: Gökkuşağı");
+		
 		if (g_MarkerWidht == 3.0)
 			menu.AddItem("Kalinlastir", "Kalınlık: 3.0");
 		else if (g_MarkerWidht == 5.0)
@@ -83,7 +87,8 @@ public Action Command_Marker(int client, int args)
 			menu.AddItem("Kalinlastir", "Kalınlık: 8.0");
 		else if (g_MarkerWidht == 10.0)
 			menu.AddItem("Kalinlastir", "Kalınlık: 10.0");
-		if (g_MarkerType == 0)
+		
+		if (g_MarkerType == 0 || g_MarkerType == 2)
 		{
 			if (g_MarkerSpeed == 0)
 				menu.AddItem("Akisyukselt", "Akış: Kapalı");
@@ -98,6 +103,7 @@ public Action Command_Marker(int client, int args)
 		}
 		else if (g_MarkerType == 1)
 			menu.AddItem("Akisyukselt", "Akış: Devre dışı", ITEMDRAW_DISABLED);
+		
 		if (g_MarkerAmplitude == 0.0)
 			menu.AddItem("Titresimyukselt", "Titreşim: Kapalı");
 		else if (g_MarkerAmplitude == 1.0)
@@ -108,16 +114,37 @@ public Action Command_Marker(int client, int args)
 			menu.AddItem("Titresimyukselt", "Titreşim: Yüksek");
 		else if (g_MarkerAmplitude == 10.0)
 			menu.AddItem("Titresimyukselt", "Titreşim: Yüksek Dozlu");
+		
 		if (g_MarkerType == 0)
-			menu.AddItem("Gorunumdegis", "Görünüm: Işın");
+			menu.AddItem("Gorunumdegis", "Görünüm: Işın (WH)");
 		else if (g_MarkerType == 1)
-			menu.AddItem("Gorunumdegis", "Görünüm: Pürüzsüz");
+			menu.AddItem("Gorunumdegis", "Görünüm: Pürüzsüz (WH)");
+		else if (g_MarkerType == 2)
+			menu.AddItem("Gorunumdegis", "Görünüm: Işın");
+		
+		if (!CiftParca)
+			menu.AddItem("Yeniparca", "Parça: Tek");
+		else
+			menu.AddItem("Yeniparca", "Parça: Çift");
+		
+		if (!CiftParca)
+			menu.AddItem("Parcamesafesi", "Parça Mesafe: Devre dışı", ITEMDRAW_DISABLED);
+		else
+		{
+			if (g_MarkerMesafe == 16.0)
+				menu.AddItem("Parcamesafesi", "Parça Mesafe: Kısa");
+			else if (g_MarkerMesafe == 20.0)
+				menu.AddItem("Parcamesafesi", "Parça Mesafe: Orta");
+			else if (g_MarkerMesafe == 24.0)
+				menu.AddItem("Parcamesafesi", "Parça Mesafe: Uzun");
+		}
+		
 		menu.Display(client, MENU_TIME_FOREVER);
 		return Plugin_Handled;
 	}
 	else
 	{
-		CReplyToCommand(client, "{green}[ByDexter] {default}Bu komutu sadece {blue}komutçu kullanabilir!");
+		ReplyToCommand(client, "[SM] \x01Bu komutu sadece \x04komutçu kullanabilir!");
 		return Plugin_Handled;
 	}
 }
@@ -126,7 +153,7 @@ public int Menu_CallBack(Menu menu, MenuAction action, int param1, int param2)
 {
 	if (action == MenuAction_Select)
 	{
-		if (IsPlayerAlive(param1))
+		if (IsPlayerAlive(param1) && warden_iswarden(param1))
 		{
 			char Item[32];
 			menu.GetItem(param2, Item, sizeof(Item));
@@ -147,7 +174,7 @@ public int Menu_CallBack(Menu menu, MenuAction action, int param1, int param2)
 			{
 				g_MarkerColorStat++;
 				if (g_MarkerColorStat == 1)
-					g_MarkerColor =  { 125, 50, 50, 255 };
+					g_MarkerColor =  { 255, 50, 50, 255 };
 				else if (g_MarkerColorStat == 2)
 					g_MarkerColor =  { 0, 255, 0, 255 };
 				else if (g_MarkerColorStat == 3)
@@ -205,17 +232,40 @@ public int Menu_CallBack(Menu menu, MenuAction action, int param1, int param2)
 				if (g_MarkerType == 1)
 					g_Beam = PrecacheModel("materials/sprites/white.vmt");
 				else if (g_MarkerType == 2)
+					g_Beam = PrecacheModel("materials/sprites/laserbeam.vmt");
+				else if (g_MarkerType == 3)
 				{
 					g_MarkerType = 0;
 					g_Beam = PrecacheModel("materials/sprites/laser_dexter.vmt");
 				}
 			}
+			else if (StrEqual(Item, "Yeniparca", true))
+			{
+				if (!CiftParca)
+					CiftParca = true;
+				else
+					CiftParca = false;
+			}
+			else if (StrEqual(Item, "Parcamesafesi", true))
+			{
+				if (g_MarkerMesafe == 16.0)
+					g_MarkerMesafe = 20.0;
+				else if (g_MarkerMesafe == 20.0)
+					g_MarkerMesafe = 24.0;
+				else if (g_MarkerMesafe == 24.0)
+					g_MarkerMesafe = 16.0;
+			}
 			Marker_Olustur();
 			FakeClientCommand(param1, "sm_marker");
 		}
-		else
+		else if (!warden_iswarden(param1))
 		{
-			CReplyToCommand(param1, "{green}[ByDexter] {default}Ölü olduğun için {blue}ayarlar yapılmadı!");
+			ReplyToCommand(param1, "[SM] \x01Ayar değiştirmen için \x04komutçu olman!");
+			delete menu;
+		}
+		else if (!IsPlayerAlive(param1))
+		{
+			ReplyToCommand(param1, "[SM] \x01Ayar değiştirmen için \x04hayatta olmalısın!");
 			delete menu;
 		}
 	}
@@ -238,28 +288,51 @@ public Action Timer_MarkerOlusturma(Handle timer, any data)
 
 void Marker_Olustur()
 {
-	if (g_MarkerPos[0] == 0.0)
-		return;
-	if (g_MarkerColorStat == 6)
+	if (g_MarkerPos[0] == 0.0)return;
+	if (!CiftParca)
 	{
-		int G_Color[4];
-		G_Color[0] = GetRandomInt(1, 255);
-		G_Color[1] = GetRandomInt(1, 255);
-		G_Color[2] = GetRandomInt(1, 255);
-		G_Color[3] = 255;
-		TE_SetupBeamRingPoint(g_MarkerPos, g_MarkerSize, g_MarkerSize + 0.1, g_Beam, g_Halo, 0, 10, 1.0, g_MarkerWidht, g_MarkerAmplitude, G_Color, g_MarkerSpeed, 0);
-		
+		if (g_MarkerColorStat == 6)
+		{
+			int G_Color[4];
+			G_Color[0] = GetRandomInt(1, 255);
+			G_Color[1] = GetRandomInt(1, 255);
+			G_Color[2] = GetRandomInt(1, 255);
+			G_Color[3] = 255;
+			TE_SetupBeamRingPoint(g_MarkerPos, g_MarkerSize, g_MarkerSize + 0.1, g_Beam, g_Halo, 0, 10, 1.0, g_MarkerWidht, g_MarkerAmplitude, G_Color, g_MarkerSpeed, 0);
+			
+		}
+		else if (g_MarkerColorStat != 6)
+			TE_SetupBeamRingPoint(g_MarkerPos, g_MarkerSize, g_MarkerSize + 0.1, g_Beam, g_Halo, 0, 10, 1.0, g_MarkerWidht, g_MarkerAmplitude, g_MarkerColor, g_MarkerSpeed, 0);
+		TE_SendToAll();
 	}
-	else if (g_MarkerColorStat != 6)
-		TE_SetupBeamRingPoint(g_MarkerPos, g_MarkerSize, g_MarkerSize + 0.1, g_Beam, g_Halo, 0, 10, 1.0, g_MarkerWidht, g_MarkerAmplitude, g_MarkerColor, g_MarkerSpeed, 0);
-	TE_SendToAll();
+	else
+	{
+		if (g_MarkerColorStat == 6)
+		{
+			int G_Color[4];
+			G_Color[0] = GetRandomInt(1, 255);
+			G_Color[1] = GetRandomInt(1, 255);
+			G_Color[2] = GetRandomInt(1, 255);
+			G_Color[3] = 255;
+			TE_SetupBeamRingPoint(g_MarkerPos, g_MarkerSize, g_MarkerSize + 0.1, g_Beam, g_Halo, 0, 10, 1.0, g_MarkerWidht, g_MarkerAmplitude, G_Color, g_MarkerSpeed, 0);
+			TE_SendToAll();
+			g_MarkerPos[2] += g_MarkerMesafe;
+			TE_SetupBeamRingPoint(g_MarkerPos, g_MarkerSize, g_MarkerSize + 0.1, g_Beam, g_Halo, 0, 10, 1.0, g_MarkerWidht, g_MarkerAmplitude, G_Color, g_MarkerSpeed, 0);
+			TE_SendToAll();
+		}
+		else if (g_MarkerColorStat != 6)
+		{
+			TE_SetupBeamRingPoint(g_MarkerPos, g_MarkerSize, g_MarkerSize + 0.1, g_Beam, g_Halo, 0, 10, 1.0, g_MarkerWidht, g_MarkerAmplitude, g_MarkerColor, g_MarkerSpeed, 0);
+			TE_SendToAll();
+			g_MarkerPos[2] += g_MarkerMesafe;
+			TE_SetupBeamRingPoint(g_MarkerPos, g_MarkerSize, g_MarkerSize + 0.1, g_Beam, g_Halo, 0, 10, 1.0, g_MarkerWidht, g_MarkerAmplitude, g_MarkerColor, g_MarkerSpeed, 0);
+			TE_SendToAll();
+		}
+		g_MarkerPos[2] -= g_MarkerMesafe;
+	}
 }
 
-void Marker_Sifirla()
-{
-	for (int i = 0; i < 3; i++)
-	g_MarkerPos[i] = 0.0;
-}
+void Marker_Sifirla() { for (int i = 0; i < 3; i++)g_MarkerPos[i] = 0.0; }
 
 int GetClientAimTargetPos(int client, float pos[3])
 {
@@ -270,7 +343,6 @@ int GetClientAimTargetPos(int client, float pos[3])
 	GetClientEyeAngles(client, vAngles);
 	Handle trace = TR_TraceRayFilterEx(vOrigin, vAngles, MASK_SHOT, RayType_Infinite, TraceFilterAllEntities, client);
 	TR_GetEndPosition(pos, trace);
-	pos[2] += 5.0;
 	int entity = TR_GetEntityIndex(trace);
 	delete trace;
 	return entity;
