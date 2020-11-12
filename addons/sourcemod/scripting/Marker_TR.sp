@@ -261,12 +261,10 @@ public int Menu_CallBack(Menu menu, MenuAction action, int param1, int param2)
 		else if (!warden_iswarden(param1))
 		{
 			ReplyToCommand(param1, "[SM] \x01Ayar değiştirmen için \x04komutçu olman!");
-			delete menu;
 		}
 		else if (!IsPlayerAlive(param1))
 		{
 			ReplyToCommand(param1, "[SM] \x01Ayar değiştirmen için \x04hayatta olmalısın!");
-			delete menu;
 		}
 	}
 	else if (action == MenuAction_End)
