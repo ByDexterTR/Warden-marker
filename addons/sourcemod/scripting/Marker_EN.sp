@@ -11,7 +11,7 @@ int CiftParca = 1;
 
 public Plugin myinfo = 
 {
-	name = "Komutçu Marker", 
+	name = "Warden Marker", 
 	author = "ByDexter", 
 	description = "", 
 	version = "1.3", 
@@ -54,7 +54,7 @@ public Action Command_Marker(int client, int args)
 	}
 	else
 	{
-		ReplyToCommand(client, "[SM] \x01Bu menüye erişiminiz yok.");
+		ReplyToCommand(client, "[SM] \x01You do not have access to this menu.");
 		return Plugin_Handled;
 	}
 }
@@ -62,7 +62,7 @@ public Action Command_Marker(int client, int args)
 Menu Warden_Marker()
 {
 	Menu menu = new Menu(Menu_CallBack);
-	menu.SetTitle("▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n   ★ Marker - Ayarlar ★\n▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬");
+	menu.SetTitle("▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n   ★ Marker - Properties ★\n▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬");
 	
 	if (g_MarkerSize == 100.0)
 		menu.AddItem("1", "Boyut: Small");
@@ -76,82 +76,82 @@ Menu Warden_Marker()
 		menu.AddItem("1", "Boyut: XXLarge");
 	
 	if (g_MarkerColorStat == 0)
-		menu.AddItem("2", "Renk: Mavi");
+		menu.AddItem("2", "Size: Blue");
 	else if (g_MarkerColorStat == 1)
-		menu.AddItem("2", "Renk: Kırmızı");
+		menu.AddItem("2", "Size: Red");
 	else if (g_MarkerColorStat == 2)
-		menu.AddItem("2", "Renk: Yeşil");
+		menu.AddItem("2", "Size: Green");
 	else if (g_MarkerColorStat == 3)
-		menu.AddItem("2", "Renk: Sarı");
+		menu.AddItem("2", "Size: Yellow");
 	else if (g_MarkerColorStat == 4)
-		menu.AddItem("2", "Renk: Beyaz");
+		menu.AddItem("2", "Size: White");
 	else if (g_MarkerColorStat == 5)
-		menu.AddItem("2", "Renk: Pembe");
+		menu.AddItem("2", "Size: Pink");
 	else if (g_MarkerColorStat == 6)
-		menu.AddItem("2", "Renk: Gökkuşağı");
+		menu.AddItem("2", "Size: Random");
 	
 	if (g_MarkerWidht == 3.0)
-		menu.AddItem("3", "Kalınlık: 3.0");
+		menu.AddItem("3", "Widht: 3.0");
 	else if (g_MarkerWidht == 5.0)
-		menu.AddItem("3", "Kalınlık: 5.0");
+		menu.AddItem("3", "Widht: 5.0");
 	else if (g_MarkerWidht == 8.0)
-		menu.AddItem("3", "Kalınlık: 8.0");
+		menu.AddItem("3", "Widht: 8.0");
 	else if (g_MarkerWidht == 10.0)
-		menu.AddItem("3", "Kalınlık: 10.0");
+		menu.AddItem("3", "Widht: 10.0");
 	
 	if (g_MarkerType == 0 || g_MarkerType == 2)
 	{
 		if (g_MarkerSpeed == 0)
-			menu.AddItem("4", "Akış: Kapalı");
+			menu.AddItem("4", "Speed: Off");
 		else if (g_MarkerSpeed == 10)
-			menu.AddItem("4", "Akış: Yavaş");
+			menu.AddItem("4", "Speed: Slow");
 		else if (g_MarkerSpeed == 35)
-			menu.AddItem("4", "Akış: Orta");
+			menu.AddItem("4", "Speed: Normal");
 		else if (g_MarkerSpeed == 50)
-			menu.AddItem("4", "Akış: Hızlı");
+			menu.AddItem("4", "Speed: Fast");
 		else if (g_MarkerSpeed == 100)
-			menu.AddItem("4", "Akış: Yüksek Dozlu");
+			menu.AddItem("4", "Speed: High Fast");
 	}
 	else if (g_MarkerType == 1 || g_MarkerType == 3)
-		menu.AddItem("4", "Akış: Devre dışı", ITEMDRAW_DISABLED);
+		menu.AddItem("4", "Speed: Closed", ITEMDRAW_DISABLED);
 	
 	if (g_MarkerAmplitude == 0.0)
-		menu.AddItem("5", "Titreşim: Kapalı");
+		menu.AddItem("5", "Amplitude: Off");
 	else if (g_MarkerAmplitude == 1.0)
-		menu.AddItem("5", "Titreşim: Hafif");
+		menu.AddItem("5", "Amplitude: Slow");
 	else if (g_MarkerAmplitude == 3.0)
-		menu.AddItem("5", "Titreşim: Orta");
+		menu.AddItem("5", "Amplitude: Normal");
 	else if (g_MarkerAmplitude == 5.0)
-		menu.AddItem("5", "Titreşim: Yüksek");
+		menu.AddItem("5", "Amplitude: Fast");
 	else if (g_MarkerAmplitude == 10.0)
-		menu.AddItem("5", "Titreşim: Yüksek Dozlu");
+		menu.AddItem("5", "Amplitude: High Fast");
 	
 	if (g_MarkerType == 0)
-		menu.AddItem("6", "Görünüm: Işın (WH)");
+		menu.AddItem("6", "Type: Beam (WH)");
 	else if (g_MarkerType == 1)
-		menu.AddItem("6", "Görünüm: Pürüzsüz (WH)");
+		menu.AddItem("6", "Type: Smooth (WH)");
 	else if (g_MarkerType == 2)
-		menu.AddItem("6", "Görünüm: Işın");
+		menu.AddItem("6", "Type: Beam");
 	else if (g_MarkerType == 3)
-		menu.AddItem("6", "Görünüm: Pürüzsüz");
+		menu.AddItem("6", "Type: Smooth");
 	
 	if (CiftParca == 1)
-		menu.AddItem("7", "Parça: Tek");
+		menu.AddItem("7", "Piece: One");
 	else if (CiftParca == 2)
-		menu.AddItem("7", "Parça: Çift");
+		menu.AddItem("7", "Piece: Two");
 	else if (CiftParca == 3)
-		menu.AddItem("7", "Parça: Üçlü");
+		menu.AddItem("7", "Piece: Three");
 	
 	if (CiftParca == 1)
-		menu.AddItem("8", "Parça Mesafe: Devre dışı", ITEMDRAW_DISABLED);
+		menu.AddItem("8", "Piece Distance: Closed", ITEMDRAW_DISABLED);
 	else
 	{
 		if (g_MarkerMesafe == 16.0)
-			menu.AddItem("8", "Parça Mesafe: Kısa");
+			menu.AddItem("8", "Piece Distance: Short");
 		else if (g_MarkerMesafe == 20.0)
-			menu.AddItem("8", "Parça Mesafe: Orta");
+			menu.AddItem("8", "Piece Distance: Normal");
 		else if (g_MarkerMesafe == 24.0)
-			menu.AddItem("8", "Parça Mesafe: Uzun");
+			menu.AddItem("8", "Piece Distance: Long");
 	}
 	return menu;
 }
@@ -267,7 +267,7 @@ public int Menu_CallBack(Menu menu, MenuAction action, int param1, int param2)
 		}
 		else
 		{
-			PrintToChat(param1, "[SM] \x01Bu menüye erişiminiz yok.");
+			PrintToChat(param1, "[SM] \x01You do not have access to this menu.");
 		}
 	}
 	else if (action == MenuAction_End)
