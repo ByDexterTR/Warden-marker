@@ -2,6 +2,5 @@
 {
 	"$spriteorientation" "vp_parallel"
 	"$spriteorigin" "[ 0.50 0.50 ]"
-	"$basetexture" "sprites/laserbeam"
-	"$ignorez" "1"
+	"$basetexture" "marker/white"
 }

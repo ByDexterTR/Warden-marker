@@ -1,0 +1,42 @@
+"Phrases"
+{
+	"Access Menu"
+	{
+		"tr" "Bu menüye erişiminiz yok."
+	}
+	
+	"Marker Size"
+	{
+		"tr" "Boyut:"
+	}
+	
+	"Marker Color"
+	{
+		"tr" "Renk:"
+	}
+	
+	"Marker Widht"
+	{
+		"tr" "Kalınlık:"
+	}
+	
+	"Marker Flow"
+	{
+		"tr" "Akış:"
+	}
+	
+	"Marker Amplitude"
+	{
+		"tr" "Titreşim:"
+	}
+	
+	"Marker Type"
+	{
+		"tr" "Tip:"
+	}
+	
+	"Marker Height Distance"
+	{
+		"tr" "Yükseklik Mesafesi:"
+	}
+} 

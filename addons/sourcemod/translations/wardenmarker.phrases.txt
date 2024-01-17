@@ -1,0 +1,42 @@
+"Phrases"
+{
+	"Access Menu"
+	{
+		"en" "You do not have access to this menu."
+	}
+	
+	"Marker Size"
+	{
+		"en" "Size:"
+	}
+	
+	"Marker Color"
+	{
+		"en" "Color:"
+	}
+	
+	"Marker Widht"
+	{
+		"en" "Widht:"
+	}
+	
+	"Marker Flow"
+	{
+		"en" "Flow:"
+	}
+	
+	"Marker Amplitude"
+	{
+		"en" "Amplitude:"
+	}
+	
+	"Marker Type"
+	{
+		"en" "Type:"
+	}
+	
+	"Marker Height Distance"
+	{
+		"en" "Height Distance:"
+	}
+} 
